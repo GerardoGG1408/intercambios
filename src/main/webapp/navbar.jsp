@@ -9,11 +9,13 @@
 <%
     boolean logged = false;
     String userLogged = "";
+    String img = "";
 
     if (session.getAttribute("userId") == null) {
         logged = false;
     } else {
         userLogged = (String) session.getAttribute("userId");
+        img = (String) session.getAttribute("img");
         logged = true;
     }
 %>
@@ -26,16 +28,23 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Productos</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="#">Usuarios</a>
                 </li>
             </ul>
 
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <%
+                        if (logged) {
+                    %>
+                    <img src='${img}' class="rounded-circle" height="20px" width="20px">
+                    <%
+                        } else {
+                    %>
                     <i class="far fa-user"></i>
+                    <%
+                        }
+                    %>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
@@ -43,7 +52,6 @@
                         if (logged) {
                     %>
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <li><a class="dropdown-item" href="#">Mis productos</a></li>
                     <li><a class="dropdown-item" href="userServlet?accion=logout">Cerrar sesion</a></li>
                     <%
                         } else {
