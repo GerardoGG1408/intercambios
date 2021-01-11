@@ -20,11 +20,11 @@ public class UsuarioDAO {
 
     // JDBC driver
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/intercambios?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
+    static final String DB_URL = "jdbc:mysql://jhdjjtqo9w5bzq2t.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/kxu377ur947k5ne1?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
 
     //  Database credenciales
-    static final String USER = "root";
-    static final String PASS = "gERARDO1!";
+    static final String USER = "sy9fbnddkd69lxtm";
+    static final String PASS = "sdjelioiykq4rgr3";
 
     private final String SQL_INSERT = "INSERT INTO usuario(email, username, name, lastName, loginStatus, imgRuta, pass) VALUES (?,?,?,?,?,?,?)";
     private final String SQL_UPDATE = "";
