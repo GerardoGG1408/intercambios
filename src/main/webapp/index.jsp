@@ -4,6 +4,7 @@
     Author     : gerardo
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,27 +13,63 @@
         <title>Inicio</title>
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .abs-center {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 90vh;
+            }
+        </style>
     </head>
     <body>
         <%@include file="navbar.jsp"%>
 
 
-        <% if (logged) { %>
-            <div class="container" style="height: 100px;">
-                <div class="row">
-                    <div class="col-sm-3 vh-100 d-inline-block">
-                        <h5>Amigos</h5>
-                        <h5>Solicitudes de amistad</h5>
-                        <h5>Solicitudes de intercambios</h5>
+        <% if (logged) {%>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+                <aside class="col-12 col-md-3 col-xl-2 p-0 bg-dark flex-shrink-1">
+                    <nav class="navbar navbar-expand-md navbar-dark bd-dark flex-md-column flex-row align-items-center py-2 text-center sticky-top" id="socialTab">
+                        <div class="text-center p-3">
+                            <img src='${img}' alt="profile picture" class="img-fluid rounded-circle my-4 p-1 d-none d-md-block shadow-lg">
+                            <a href="#" class="navbar-brand mx-0 font-weight-bold text-nowrap">
+                                <%= username%></a>
+                        </div>
+                        <button class="navbar-toggler border-0 order-1" type="button" data-toogler="collapse" data-target="#nav" aria-controls="nav" aria-expand="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse order-last" id="nav">
+                            <ul class="navbar-nav flex-column w-100 justify-content-center">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">Amigos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">Solicitudes de amistad</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">Solicitudes de intercambio</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </nav>
+                </aside>
+                <main class="col px-0 flex-grow-1">
+                    <div class="container py-3">
+                        <div class="abs-center">
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                <a class="btn btn-secondary btn-lg" href="#">Crear un nuevo Intercambio</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-9 vh-100 d-inline-block">
-                        Crear un intercambio
-                    </div>
-                </div>
+                </main>
             </div>
+        </div>
         <% } else { %>
-            <!-- algo -->
-        <% } %>
+        <!-- algo -->
+        <% }%>
 
 
         <!-- Bootstrap 5 JS -->

@@ -151,6 +151,7 @@ public class fileServlet extends HttpServlet {
                 session.setAttribute("userId", user_en.getEmail());
                 mailSend.sendAsHtml(user_en.getEmail(), "Registro Exitoso", 0);
                 session.setAttribute("img", fileName);
+                session.setAttribute("username", user_en.getUsername());
                 response.sendRedirect("index.jsp");
             } else {
                 response.sendRedirect("register.jsp?message=" + message);

@@ -117,6 +117,7 @@ public class userServlet extends HttpServlet {
             session = request.getSession();
             session.setAttribute("userId", res.getEntidad().getEmail());
             session.setAttribute("img", res.getEntidad().getRutaIMG());
+            session.setAttribute("username", res.getEntidad().getUsername());
             response.sendRedirect("index.jsp");
         }
     }
