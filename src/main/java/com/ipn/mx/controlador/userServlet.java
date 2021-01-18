@@ -1,12 +1,16 @@
 package com.ipn.mx.controlador;
 
 import com.ipn.mx.modelo.dao.UsuarioDAO;
+import com.ipn.mx.modelo.dto.AmistadDTO;
 import com.ipn.mx.modelo.dto.UsuarioDTO;
+import com.ipn.mx.modelo.entidades.relacionAmistad;
 import com.ipn.mx.modelo.entidades.usuario;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,11 +42,14 @@ public class userServlet extends HttpServlet {
                     if (accion.equals("usuario")) {
                         verUsuario(request, response);
                     } else {
-
                         if (accion.equals("removeUser")) {
                             removeUser(request, response);
                         } else {
-                            errorPage(request, response);
+                            if (accion.equals("addFriend")) {
+                                addFriend(request, response);
+                            } else {
+                                errorPage(request, response);
+                            }
                         }
                     }
                 }
@@ -103,14 +110,14 @@ public class userServlet extends HttpServlet {
         UsuarioDAO dao = new UsuarioDAO();
         UsuarioDTO dto = new UsuarioDTO();
         UsuarioDTO res;
-        
+
         user.setUsername(request.getParameter("correUsuario"));
         user.setPassword(request.getParameter("passUsuario"));
-        
+
         dto.setEntidad(user);
         res = dao.read(dto);
-        
-        if ( res == null ) {
+
+        if (res == null) {
             response.sendRedirect("login.jsp?message=error");
         } else {
             HttpSession session;
@@ -122,17 +129,40 @@ public class userServlet extends HttpServlet {
         }
     }
 
-    private void lista(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void lista(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
+        String cadena = "";
+        List usuarios;
+
+        cadena = request.getParameter("friendSearch");
+
+        usuario user = new usuario();
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+
+        user.setUsername(cadena);
+        dto.setEntidad(user);
+
+        try {
+            usuarios = dao.readUsuarios(dto);
+
+            request.setAttribute("usuarios", usuarios);
+
+            RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+            rd.forward(request, response);
+        } catch (IOException ex) {
+            Logger.getLogger(userServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void logout(HttpServletRequest request, HttpServletResponse response) {
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             HttpSession session;
             session = request.getSession();
             session.removeAttribute("userId");
             session.removeAttribute("img");
-            response.sendRedirect("index.jsp");
+
+            RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+            rd.forward(request, response);
         } catch (IOException ex) {
             Logger.getLogger(userServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -148,6 +178,25 @@ public class userServlet extends HttpServlet {
 
     private void removeUser(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void addFriend(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        relacionAmistad user = new relacionAmistad();
+        UsuarioDAO dao = new UsuarioDAO();
+        AmistadDTO dto = new AmistadDTO();
+        
+        HttpSession session;
+        session = request.getSession();
+
+        user.setEmail((String) session.getAttribute("userId"));
+        user.setAmigo((String) request.getAttribute("friendId"));
+        user.setStatus(0);
+
+        dto.setEntidad(user);
+        
+        dao.addFriend(dto);
+
+        response.sendRedirect("index.jsp");
     }
 
 }

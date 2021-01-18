@@ -23,10 +23,21 @@
 %>
 
 
-<nav class="navbar navbar-dark bg-dark sticky-top">
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <i class="fas fa-gifts navbar-brand fa-2x"></i>
-        <a class="navbar-brand" href="#"><h3>ESCOM</h3></a>
+        <a href="index.jsp"><i class="fas fa-gifts navbar-brand fa-2x"></i></a>
+        <%
+            if (logged) {
+        %>
+        <form action="userServlet?accion=listarUsuarios" method="post">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar amigo" name="friendSearch" id="friendSearch">
+                <input class="btn btn-outline-secondary" type="submit" value="Buscar">
+            </div>
+        </form>
+        <%
+            }
+        %>
         <div class="btn-group dropstart md-2">
             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <%

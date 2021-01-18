@@ -6,6 +6,7 @@ import com.ipn.mx.modelo.dto.UsuarioDTO;
 import com.ipn.mx.modelo.entidades.usuario;
 import java.io.*;
 import java.util.*;
+import javax.servlet.RequestDispatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -152,9 +153,12 @@ public class fileServlet extends HttpServlet {
                 mailSend.sendAsHtml(user_en.getEmail(), "Registro Exitoso", 0);
                 session.setAttribute("img", fileName);
                 session.setAttribute("username", user_en.getUsername());
-                response.sendRedirect("index.jsp");
-            } else {
-                response.sendRedirect("register.jsp?message=" + message);
+                
+                RequestDispatcher rd = request.getRequestDispatcher("index.jsp"); 
+                rd.forward(request, response); 
+            } else {                
+                RequestDispatcher rd = request.getRequestDispatcher("register.jsp?message=" + message); 
+                rd.forward(request, response); 
             }
             out.println("</body>");
             out.println("</html>");
