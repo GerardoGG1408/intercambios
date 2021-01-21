@@ -3,9 +3,6 @@
     Created on : 7 ene 2021, 18:48:41
     Author     : gerardo
 --%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
 <%
     boolean logged = false;
     String userLogged = "";
