@@ -36,7 +36,7 @@ public class UsuarioDAO {
     private final String SQL_READ_ALL = "";
     private final String SQL_READ_FRIENDS = "SELECT * FROM listaAmigos WHERE userId = ? or userId_friend = ?";
     private final String SQL_SEARCH = "SELECT * FROM usuario WHERE username like ?";
-    private final String SQL_ADD_FRIEND = "INSERT INTO listaAmigos(userId, userId_friend, status) values (?,?,?)";
+    private final String SQL_ADD_FRIEND = "INSERT INTO listaAmigos(userId, userId_friend, status) VALUES (?,?,?)";
 
     private Connection conn = null;
 

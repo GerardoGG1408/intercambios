@@ -181,6 +181,7 @@ public class userServlet extends HttpServlet {
     }
 
     private void addFriend(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String message = "";
         relacionAmistad user = new relacionAmistad();
         UsuarioDAO dao = new UsuarioDAO();
         AmistadDTO dto = new AmistadDTO();
@@ -189,12 +190,12 @@ public class userServlet extends HttpServlet {
         session = request.getSession();
 
         user.setEmail((String) session.getAttribute("userId"));
-        user.setAmigo((String) request.getAttribute("friendId"));
+        user.setAmigo((String) request.getParameter("friendId"));
         user.setStatus(0);
 
         dto.setEntidad(user);
         
-        dao.addFriend(dto);
+        message = dao.addFriend(dto);
 
         response.sendRedirect("index.jsp");
     }
