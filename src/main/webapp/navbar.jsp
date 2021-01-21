@@ -30,7 +30,7 @@
                 <div class="col">
                     <a href="index.jsp"><i class="fas fa-gifts navbar-brand fa-2x"></i></a>
                 </div>
-                <div class="col order-1">
+                <div class="col">
                     <%
                         if (logged) {
                     %>
