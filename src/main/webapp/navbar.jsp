@@ -25,48 +25,58 @@
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <a href="index.jsp"><i class="fas fa-gifts navbar-brand fa-2x"></i></a>
-        <%
-            if (logged) {
-        %>
-        <form action="userServlet?accion=listarUsuarios" method="post">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Buscar amigo" name="friendSearch" id="friendSearch">
-                <input class="btn btn-outline-secondary" type="submit" value="Buscar">
-            </div>
-        </form>
-        <%
-            }
-        %>
-        <div class="btn-group dropstart md-2">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <%
-                    if (logged) {
-                %>
-                <img src='${img}' class="rounded-circle" height="20px" width="20px">
-                <%
-                } else {
-                %>
-                <i class="far fa-user"></i>
-                <%
-                    }
-                %>
-            </button>
-            <ul class="dropdown-menu">
-                <%
-                    if (logged) {
-                %>
-                <li><a class="dropdown-item" href="#">Perfil</a></li>
-                <li><a class="dropdown-item" href="userServlet?accion=logout">Cerrar sesion</a></li>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <a href="index.jsp"><i class="fas fa-gifts navbar-brand fa-2x"></i></a>
+                </div>
+                <div class="col order-1">
                     <%
-                    } else {
+                        if (logged) {
                     %>
-                <li><a class="dropdown-item" href="login.jsp">Iniciar sesion</a></li>
-                <li><a class="dropdown-item" href="register.jsp">Registrarse</a></li>
+                    <form action="userServlet?accion=listarUsuarios" method="post">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Buscar amigo" name="friendSearch" id="friendSearch">
+                            <input class="btn btn-outline-secondary" type="submit" value="Buscar">
+                        </div>
+                    </form>
                     <%
                         }
                     %>
-            </ul>
+                </div>
+                <div class="col order-5">
+                    <div class="btn-group dropstart md-2">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <%
+                                if (logged) {
+                            %>
+                            <img src='${img}' class="rounded-circle" height="20px" width="20px">
+                            <%
+                            } else {
+                            %>
+                            <i class="far fa-user"></i>
+                            <%
+                                }
+                            %>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <%
+                                if (logged) {
+                            %>
+                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            <li><a class="dropdown-item" href="userServlet?accion=logout">Cerrar sesion</a></li>
+                                <%
+                                } else {
+                                %>
+                            <li><a class="dropdown-item" href="login.jsp">Iniciar sesion</a></li>
+                            <li><a class="dropdown-item" href="register.jsp">Registrarse</a></li>
+                                <%
+                                    }
+                                %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
