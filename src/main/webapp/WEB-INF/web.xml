@@ -8,6 +8,10 @@
         <servlet-name>fileServlet</servlet-name>
         <servlet-class>com.ipn.mx.controlador.fileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>intercambioServlet</servlet-name>
+        <servlet-class>com.ipn.mx.controlador.intercambioServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>userServlet</servlet-name>
         <url-pattern>/userServlet</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>fileServlet</servlet-name>
         <url-pattern>/fileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>intercambioServlet</servlet-name>
+        <url-pattern>/intercambioServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

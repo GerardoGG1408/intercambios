@@ -4,6 +4,8 @@
    Author     : gerardo
 --%>
 
+<%@page import="com.ipn.mx.modelo.dao.IntercambiosDAO"%>
+<%@page import="com.ipn.mx.modelo.dto.IntercambiosDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.util.List"%>
@@ -44,7 +46,10 @@
 
         <% if (logged) {
                 List<UsuarioDTO> amigos = null;
+                List<IntercambiosDTO> misIntercambios = null;
+                List<IntercambiosDTO> solicitudesIntercambio = null;
                 UsuarioDAO dao = new UsuarioDAO();
+                IntercambiosDAO daoInt = new IntercambiosDAO();
                 UsuarioDTO dto = new UsuarioDTO();
                 usuario user = new usuario();
 
@@ -54,6 +59,8 @@
 
                 try {
                     amigos = dao.obtenerAmigos(dto);
+                    solicitudesIntercambio = daoInt.obtenerSolicitudesIntercambio(dto);
+                    misIntercambios = daoInt.read(dto);
                 } catch (SQLException ex) {
                     out.println(ex.getMessage());
                 }
@@ -143,6 +150,35 @@
                                     <% } %>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">Solicitudes de intercambio</a>
+                                    <% if (solicitudesIntercambio != null) {
+                                            if (solicitudesIntercambio.size() > 0) {
+                                                for (int i = 0; i < solicitudesIntercambio.size(); i++) {
+                                                    if (solicitudesIntercambio.get(i).getEntidad().getStatus_sol()== 0) {
+                                    %>
+                                <li class="list-group-item bg-dark">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p class="text-light bg-dark"><% out.println(solicitudesIntercambio.get(i).getEntidad().getNombre()); %></p>
+                                            </div>
+                                            <div class="col-lg-2 col">
+                                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                                    <a href="intercambioServlet?accion=aceptarSolicitud&intercambioId=<% out.println(solicitudesIntercambio.get(i).getEntidad().getId()); %>" class="btn btn-secondary btn-sm"><i class="fas fa-check-circle"></i></a>
+                                                    <a href="intercambioServlet?accion=removeSolicitud&intercambioId=<% out.println(solicitudesIntercambio.get(i).getEntidad().getId()); %>" class="btn btn-secondary btn-sm"><i class="fas fa-user-minus"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <%
+                                        }
+                                    }
+                                } else { %>
+                                <li class="nav-item"><p class="text-light bg-dark">No tienes solicitudes de intercambios</p></li>
+                                    <% } %>
+                                    <% } else { %>
+                                <li class="nav-item"><p class="text-light bg-dark">No tienes solicitudes de intercambios</p></li>
+                                    <% } %>
                                 </li>
                             </ul>
                         </div>
@@ -153,8 +189,148 @@
                     <div class="container py-3">
                         <div class="abs-center">
                             <% if (request.getAttribute("usuarios") == null && request.getParameter("form") == null) { %>
-                            <div class="d-grid gap-2 col-6 mx-auto">
+
+
+                            <div class="container-fluid">
                                 <a class="btn btn-secondary btn-lg" href="index.jsp?form=true">Crear un nuevo Intercambio</a>
+
+                                <br/>
+                                <hr/>
+                                <h3>Mis intercambios</h3>
+                                <hr/>
+                                <br/>
+
+                                <% if (misIntercambios != null) { %>
+
+                                <% if (misIntercambios.size() > 0) { %>
+
+                                <% for (int i = 0; i < misIntercambios.size(); i++) { %>
+
+                                <div class="accordion accordion-flush" id="accordionFlushExample<% out.print(i); %>">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="flush-heading<% out.print(i); %>">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<% out.print(i); %>" aria-expanded="false" aria-controls="flush-collapse<% out.print(i); %>">
+                                                <% out.println(misIntercambios.get(i).getEntidad().getNombre()); %>
+                                            </button>
+                                        </h2>
+                                        <div id="flush-collapse<% out.print(i); %>" class="accordion-collapse collapse" aria-labelledby="flush-heading<% out.print(i); %>" data-bs-parent="#accordionFlushExample<% out.print(i); %>">
+                                            <div class="accordion-body">
+
+                                                <h6><p class="text-break">Folio: <% out.print(misIntercambios.get(i).getEntidad().getId()); %></p></h6>
+
+                                                <div class="container">
+                                                    <div class="row align-items-start m-4">
+                                                        <div class="col-lg">
+                                                            <i class="far fa-clock fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(misIntercambios.get(i).getEntidad().getDateShipped()); %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-center m-4">
+                                                        <div class="col-lg">
+                                                            <i class="fas fa-gifts fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(misIntercambios.get(i).getEntidad().getTypeGift()); %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-end m-4">
+                                                        <div class="col-lg">
+                                                            <i class="fas fa-money-bill-alt fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(misIntercambios.get(i).getEntidad().getGiftValue()); %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <p class="text-break">
+                                                    Comentarios: <% out.print(misIntercambios.get(i).getEntidad().getComentario()); %>
+                                                </p>
+
+                                                <% if (misIntercambios.get(i).getEntidad().getStatus().equals("CREATED")) { %>
+
+                                                <div class="btn-group btn-group" role="group">
+                                                    <a class="btn btn-outline-secondary" href="register.jsp">Crear parejas</a>
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#friendsModal<% out.print(i); %>">
+                                                        Invitar Amigos
+                                                    </button>
+                                                    <a class="btn btn-outline-secondary" href="intercambioServlet?accion=delete&id=<% out.print(misIntercambios.get(i).getEntidad().getId()); %>">Eliminar intercambio</a>
+                                                </div>
+
+                                                <div class="modal fade" id="friendsModal<% out.print(i); %>" tabindex="-1" aria-labelledby="friendsModal<% out.print(i); %>" aria-hidden="true">
+                                                    <form action="intercambioServlet?accion=addFriends" method="post">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Mis amigos</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Folio:
+                                                                    <input type="text" name="folio" value="<% out.print(misIntercambios.get(i).getEntidad().getId()); %>">
+                                                                    <br/>
+                                                                    <hr/>
+                                                                    <br/>
+                                                                    <ul class="list-group">
+                                                                        <% if (amigos != null) {
+                                                                                if (amigos.size() > 0) {
+                                                                                    for (int j = 0; j < amigos.size(); j++) {
+                                                                                        if (amigos.get(j).getEntidad().getStatus() == 1) {
+                                                                        %>
+
+                                                                        <li class="list-group-item">
+                                                                            <input class="form-check-input me-1" type="checkbox" name="amigos" value="<% out.print(amigos.get(j).getEntidad().getEmail()); %>">
+                                                                            <% out.println(amigos.get(j).getEntidad().getUsername()); %>
+                                                                        </li>
+
+                                                                        <%
+                                                                                }
+                                                                            }
+                                                                        } else { %>
+                                                                        <li class="list-group-item"><p>No tienes amigos</p></li>
+                                                                            <% } %>
+                                                                            <% } else { %>
+                                                                        <li class="list-group-item"><p>No tienes amigos</p></li>
+                                                                            <% } %>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <input type="submit" class="btn btn-secondary" value="Invitar amigos">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+
+
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% } %>
+
+                                <% } else { %>
+
+                                No has creado intercambios o aun no te invitan a algun intercambio
+
+                                <% } %>
+
+                                <% } else { %>
+
+                                No has creado intercambios o aun no te invitan a algun intercambio
+
+                                <% } %>
+
+
+
+
+
                             </div>
                             <% } else if (request.getAttribute("usuarios") != null) {
                                 List<UsuarioDTO> usuarios_buscados = null;
@@ -186,9 +362,63 @@
                             <%
                             } else if (request.getParameter("form") != null) {
                             %>
+
+                            <%
+                                boolean error = false;
+                                String parametro = request.getParameter("message");
+
+                                if (parametro != null) {
+                                    if (parametro.equals("error")) {
+                                        error = true;
+                                    } else {
+                                        error = false;
+                                    }
+                                } else {
+                                    error = false;
+                                }
+                            %>
                             <div class="d-grid gap-2 col-6 mx-auto">
-                                Formulario
-                                <a class="btn btn-secondary btn-lg" href="index.jsp">Regresar</a>
+                                <form action="intercambioServlet?accion=crear" method="post">
+                                    <h3>Crear tu intercambio</h3>
+                                    <hr/>
+                                    <br/>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="nombreIntercambio" placeholder="Nombre" name="nombreIntercambio" required>
+                                        <label for="nombreIntercambio">Nombre del intercambio</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="date" class="form-control" id="dateShipped" placeholder="Fecha de entrega" name="dateShipped" required>
+                                        <label for="dateShipped">Fecha de entrega</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="giftType" placeholder="Tipo de regalo" name="giftType" required>
+                                        <label for="giftType">Tipo de regalo</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="number" min="10" max="1000" class="form-control" id="giftValue" placeholder="Password" name="giftValue" required>
+                                        <label for="giftValue">Costo maximo</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Comentarios" id="giftComment" name="giftComment"></textarea>
+                                        <label for="giftComment">Comentarios</label>
+                                    </div>
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                        <input type="submit" class="btn btn-secondary btn-lg" name="submit" value="Crear">
+                                        <a class="btn btn-secondary btn-lg" href="index.jsp">Regresar</a>
+                                    </div>
+                                </form>
+                                <% if (error) { %>
+
+                                <div class="d-flex justify-content-center">
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <h4 class="alert-heading text-center">Error</h4>
+                                        <p class="text-center">Ocurrio un error durante la creacion del intercambio. <br> Puede que ya tengas un intercambio con ese nombre.</p>
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <% }%>
                             </div>
                             <%}%>
                         </div>

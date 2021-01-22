@@ -1,4 +1,4 @@
-package com.ipn.mx.modelo.dao;
+package com.ipn.mx.modelo.utilerias;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

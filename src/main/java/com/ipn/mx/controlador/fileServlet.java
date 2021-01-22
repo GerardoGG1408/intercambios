@@ -1,7 +1,7 @@
 package com.ipn.mx.controlador;
 
 import com.ipn.mx.modelo.dao.UsuarioDAO;
-import com.ipn.mx.modelo.dao.mailSend;
+import com.ipn.mx.modelo.utilerias.mailSend;
 import com.ipn.mx.modelo.dto.UsuarioDTO;
 import com.ipn.mx.modelo.entidades.usuario;
 import java.io.*;
