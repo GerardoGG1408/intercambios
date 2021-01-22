@@ -177,7 +177,7 @@
                                     <td><a href="userServlet?accion=addFriend&friendId=<%out.println(usuarios_buscados.get(i).getEntidad().getEmail());%>" class="btn btn-secondary"><i class="fas fa-user-plus"></i></a></td>
                                 </tr>  
                                 <% }
-                                        }%>
+                                    }%>
                             </table>
                             <% }
                             %>
@@ -197,7 +197,54 @@
             </div>
         </div>
         <% } else { %>
-        <div>algo</div>
+        <div class="align-items-center">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <img src="images/logo.jpeg" alt="alt" class="rounded mx-auto d-block"/>
+
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                    <a class="btn btn-outline-secondary btn-lg" href="register.jsp">Registrate</a>
+                    <a class="btn btn-outline-secondary btn-lg" href="login.jsp">Inicia sesion</a>
+                </div>
+                <br/>
+                <hr/>
+                <br/>
+
+                <h3 class="text-center">Desarrollado por:</h3>
+                <table class="table table-borderless">
+                    <tr class="align-middle">
+                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                        <th scope="row">Gerardo González Garzon </th>
+                    </tr>
+                    <tr class="align-middle">
+                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                        <th scope="row">Alfonso Plaza Esquivel</th>
+                    </tr>
+                    <tr class="align-middle">
+                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                        <th scope="row">Rafael Reveles Rodríguez </th>
+                    </tr>
+                </table>
+                <br/>
+                <hr/>
+                <br/>
+                <table class="table table-borderless">
+                    <tr class="align-middle">
+                        <th scope="row"><h5 class="text-center">Contactanos</h5></th>
+                        <td class="text-center"><i class="fab fa-instagram-square fa-3x"></i></i></td>
+                        <td class="text-center"><i class="fab fa-whatsapp-square fa-3x"></i></td>
+                        <td class="text-center"><i class="fab fa-facebook-square fa-3x"></i></td>
+                        <td class="text-center"><i class="fab fa-twitter fa-3x"></i></td>
+                        <td class="text-center"><i class="fab fa-youtube fa-3x"></i></td>
+                        
+                    </tr>
+                </table>
+            </div> 
+        </div>
         <% }%>
 
         <!-- Bootstrap 5 JS -->
