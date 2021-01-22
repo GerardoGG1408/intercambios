@@ -43,10 +43,12 @@ public class UsuarioDAO {
     private Connection conn = null;
 
     public void obtenerConexion() {
+        conn = null;
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (ClassNotFoundException | SQLException ex) {
+            obtenerConexion();
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -55,26 +57,20 @@ public class UsuarioDAO {
         obtenerConexion();
         CallableStatement cs = null;
         ResultSet rs = null;
-        try {
-            cs = conn.prepareCall(SQL_SEARCH);
-            cs.setString(1, "%" + dto.getEntidad().getUsername() + "%");
-            rs = cs.executeQuery();
-            List resultados = obtenerResultados(rs);
-            if (resultados.size() > 0) {
-                return resultados;
-            } else {
-                return null;
-            }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (cs != null) {
-                cs.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        cs = conn.prepareCall(SQL_SEARCH);
+        cs.setString(1, "%" + dto.getEntidad().getUsername() + "%");
+        rs = cs.executeQuery();
+        List resultados = obtenerResultados(rs);
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return resultados;
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
         }
     }
 
@@ -120,55 +116,43 @@ public class UsuarioDAO {
         obtenerConexion();
         CallableStatement cs = null;
         ResultSet rs = null;
-        try {
-            cs = conn.prepareCall(SQL_READ);
-            cs.setString(1, dto.getEntidad().getPassword());
-            cs.setString(2, dto.getEntidad().getUsername());
-            cs.setString(3, dto.getEntidad().getUsername());
-            rs = cs.executeQuery();
-            List resultados = obtenerResultados(rs);
-            if (resultados.size() > 0) {
-                return (UsuarioDTO) resultados.get(0);
-            } else {
-                return null;
-            }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (cs != null) {
-                cs.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        cs = conn.prepareCall(SQL_READ);
+        cs.setString(1, dto.getEntidad().getPassword());
+        cs.setString(2, dto.getEntidad().getUsername());
+        cs.setString(3, dto.getEntidad().getUsername());
+        rs = cs.executeQuery();
+        List resultados = obtenerResultados(rs);
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return (UsuarioDTO) resultados.get(0);
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
         }
     }
-    
+
     public UsuarioDTO readFriend(UsuarioDTO dto) throws SQLException {
         obtenerConexion();
         CallableStatement cs = null;
         ResultSet rs = null;
-        try {
-            cs = conn.prepareCall(SQL_READ_FRIEND);
-            cs.setString(1, dto.getEntidad().getEmail());
-            rs = cs.executeQuery();
-            List resultados = obtenerResultados(rs);
-            if (resultados.size() > 0) {
-                return (UsuarioDTO) resultados.get(0);
-            } else {
-                return null;
-            }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (cs != null) {
-                cs.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        cs = conn.prepareCall(SQL_READ_FRIEND);
+        cs.setString(1, dto.getEntidad().getEmail());
+        rs = cs.executeQuery();
+        List resultados = obtenerResultados(rs);
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return (UsuarioDTO) resultados.get(0);
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
         }
     }
 
@@ -176,27 +160,22 @@ public class UsuarioDAO {
         obtenerConexion();
         CallableStatement cs = null;
         ResultSet rs = null;
-        try {
-            cs = conn.prepareCall(SQL_READ_FRIENDS);
-            cs.setString(1, dto.getEntidad().getEmail());
-            cs.setString(2, dto.getEntidad().getEmail());
-            rs = cs.executeQuery();
-            List resultados = obtenerListaAmigos(rs, dto.getEntidad().getEmail());
-            if (resultados.size() > 0) {
-                return resultados;
-            } else {
-                return null;
-            }
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (cs != null) {
-                cs.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        cs = conn.prepareCall(SQL_READ_FRIENDS);
+        cs.setString(1, dto.getEntidad().getEmail());
+        cs.setString(2, dto.getEntidad().getEmail());
+        rs = cs.executeQuery();
+        List resultados = null;
+        resultados = obtenerListaAmigos(rs, dto.getEntidad().getEmail());
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return resultados;
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
         }
     }
 
@@ -233,7 +212,7 @@ public class UsuarioDAO {
             return completado;
         }
     }
-    
+
     public String removeFriend(AmistadDTO dto) {
         obtenerConexion();
         CallableStatement cs = null;
@@ -310,22 +289,27 @@ public class UsuarioDAO {
             UsuarioDTO dto = new UsuarioDTO();
             usuario user = new usuario();
             UsuarioDTO user_search = null;
-            
-            if(rs.getString("userId_friend").equals(logged)){
-                user.setEmail(rs.getString("userId"));
+            int status = 0;
+            String amigo = "", usuario = "";
+
+            usuario = rs.getString("userId");
+            amigo = rs.getString("userId_friend");
+            status = rs.getInt("status");
+
+            if (amigo.equals(logged)) {
+                user.setEmail(usuario);
             } else {
-                user.setEmail(rs.getString("userId_friend"));
+                user.setEmail(amigo);
             }
 
             dto.setEntidad(user);
             user_search = readFriend(dto);
-            
-            if(!rs.getString("userId_friend").equals(logged)) {
+
+            if (!amigo.equals(logged)) {
                 user_search.getEntidad().setStatus(1);
             } else {
-                user_search.getEntidad().setStatus(rs.getInt("status"));
+                user_search.getEntidad().setStatus(status);
             }
-            
             resultados.add(user_search);
         }
         return resultados;
@@ -344,7 +328,7 @@ public class UsuarioDAO {
             dto.getEntidad().setPreferences(rs.getString("preferences"));
             dto.getEntidad().setRutaIMG(rs.getString("imgRuta"));
             dto.getEntidad().setPassword(rs.getString("pass"));
-            
+
             resultados.add(dto);
         }
         return resultados;

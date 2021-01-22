@@ -140,6 +140,7 @@ public class userServlet extends HttpServlet {
     private void lista(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException {
         String cadena = "";
         List usuarios;
+        List amigos;
 
         cadena = request.getParameter("friendSearch");
 
@@ -152,8 +153,11 @@ public class userServlet extends HttpServlet {
 
         try {
             usuarios = dao.readUsuarios(dto);
-
+            amigos = dao.obtenerAmigos(dto);
+            
+            request.removeAttribute("usuarios");
             request.setAttribute("usuarios", usuarios);
+            request.setAttribute("amigos", amigos);
 
             RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
             rd.forward(request, response);
@@ -203,6 +207,8 @@ public class userServlet extends HttpServlet {
         dto.setEntidad(user);
 
         dao.addFriend(dto);
+        
+        request.removeAttribute("usuarios");
 
         response.sendRedirect("index.jsp");
     }
@@ -217,7 +223,6 @@ public class userServlet extends HttpServlet {
 
         user.setEmail((String) session.getAttribute("userId"));
         user.setAmigo((String) request.getParameter("friendId"));
-        user.setStatus(0);
 
         dto.setEntidad(user);
 

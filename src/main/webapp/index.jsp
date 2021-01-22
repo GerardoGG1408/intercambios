@@ -4,6 +4,7 @@
    Author     : gerardo
 --%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.util.List"%>
 <%@page import="com.ipn.mx.modelo.entidades.usuario"%>
@@ -54,7 +55,7 @@
                 try {
                     amigos = dao.obtenerAmigos(dto);
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    out.println(ex.getMessage());
                 }
         %>
         <div class="container-fluid">
@@ -104,7 +105,7 @@
                                     <% } else { %>
                                 <li class="nav-item"><p class="text-light bg-dark">No tienes amigos</p></li>
                                     <% } %>
-                                
+
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">Solicitudes de amistad</a>
                                 </li>
@@ -151,15 +152,20 @@
                 <main class="col px-0 flex-grow-1">
                     <div class="container py-3">
                         <div class="abs-center">
-                            <% if (request.getAttribute("usuarios") == null) { %>
+                            <% if (request.getAttribute("usuarios") == null && request.getParameter("form") == null) { %>
                             <div class="d-grid gap-2 col-6 mx-auto">
-                                <a class="btn btn-secondary btn-lg" href="#">Crear un nuevo Intercambio</a>
+                                <a class="btn btn-secondary btn-lg" href="index.jsp?form=true">Crear un nuevo Intercambio</a>
                             </div>
-                            <% } else {
-                                List<UsuarioDTO> usuarios_buscados;
+                            <% } else if (request.getAttribute("usuarios") != null) {
+                                List<UsuarioDTO> usuarios_buscados = null;
                                 usuarios_buscados = (List) request.getAttribute("usuarios");
                                 if (usuarios_buscados.size() == 1 && usuarios_buscados.get(0).getEntidad().getEmail().equals(userLogged)) {
-                            %> <h3> <p>No se encontraron usuarios</p> </h3> <%
+                            %> 
+                            <h3> <p>No se encontraron usuarios</p> </h3> 
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                <a class="btn btn-secondary btn-lg" href="index.jsp">Regresar</a>
+                            </div>
+                            <%
                             } else {
                             %>
                             <table class="table">
@@ -170,11 +176,21 @@
                                     <th scope="row"><% out.println(usuarios_buscados.get(i).getEntidad().getUsername()); %></th>
                                     <td><a href="userServlet?accion=addFriend&friendId=<%out.println(usuarios_buscados.get(i).getEntidad().getEmail());%>" class="btn btn-secondary"><i class="fas fa-user-plus"></i></a></td>
                                 </tr>  
-                                <% } %>
-                                <% } %>
+                                <% }
+                                        }%>
                             </table>
                             <% }
-                                } %>
+                            %>
+
+
+                            <%
+                            } else if (request.getParameter("form") != null) {
+                            %>
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                Formulario
+                                <a class="btn btn-secondary btn-lg" href="index.jsp">Regresar</a>
+                            </div>
+                            <%}%>
                         </div>
                     </div>
                 </main>
