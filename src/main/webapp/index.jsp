@@ -215,34 +215,37 @@
                 <br/>
 
                 <h3 class="text-center">Desarrollado por:</h3>
-                <table class="table table-borderless">
-                    <tr class="align-middle">
-                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
-                        <th scope="row">Gerardo González Garzon </th>
-                    </tr>
-                    <tr class="align-middle">
-                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
-                        <th scope="row">Alfonso Plaza Esquivel</th>
-                    </tr>
-                    <tr class="align-middle">
-                        <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
-                        <th scope="row">Rafael Reveles Rodríguez </th>
-                    </tr>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <tr class="align-middle">
+                            <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                            <th scope="row">Gerardo González Garzon </th>
+                        </tr>
+                        <tr class="align-middle">
+                            <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                            <th scope="row">Alfonso Plaza Esquivel</th>
+                        </tr>
+                        <tr class="align-middle">
+                            <td class="text-center"><i class="fas fa-user-tie fa-3x"></i></td>
+                            <th scope="row">Rafael Reveles Rodríguez </th>
+                        </tr>
+                    </table>
+                </div>
                 <br/>
                 <hr/>
                 <br/>
-                <table class="table table-borderless">
-                    <tr class="align-middle">
-                        <th scope="row"><h5 class="text-center">Contactanos</h5></th>
-                        <td class="text-center"><i class="fab fa-instagram-square fa-3x"></i></i></td>
-                        <td class="text-center"><i class="fab fa-whatsapp-square fa-3x"></i></td>
-                        <td class="text-center"><i class="fab fa-facebook-square fa-3x"></i></td>
-                        <td class="text-center"><i class="fab fa-twitter fa-3x"></i></td>
-                        <td class="text-center"><i class="fab fa-youtube fa-3x"></i></td>
-                        
-                    </tr>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <tr class="align-middle">
+                            <th scope="row"><h5 class="text-center">Contactanos</h5></th>
+                            <td class="text-center"><i class="fab fa-instagram-square fa-3x"></i></i></td>
+                            <td class="text-center"><i class="fab fa-whatsapp-square fa-3x"></i></td>
+                            <td class="text-center"><i class="fab fa-facebook-square fa-3x"></i></td>
+                            <td class="text-center"><i class="fab fa-twitter fa-3x"></i></td>
+                            <td class="text-center"><i class="fab fa-youtube fa-3x"></i></td>
+                        </tr>
+                    </table>
+                </div>
             </div> 
         </div>
         <% }%>
