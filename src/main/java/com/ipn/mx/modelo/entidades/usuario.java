@@ -16,6 +16,16 @@ public class usuario {
     private String preferences;
     private String rutaIMG;
     private String password;
+    
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public usuario() {
     }

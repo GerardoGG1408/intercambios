@@ -37,6 +37,8 @@ public class UsuarioDAO {
     private final String SQL_READ_FRIENDS = "SELECT * FROM listaAmigos WHERE userId = ? or userId_friend = ?";
     private final String SQL_SEARCH = "SELECT * FROM usuario WHERE username like ?";
     private final String SQL_ADD_FRIEND = "INSERT INTO listaAmigos(userId, userId_friend, status) VALUES (?,?,?)";
+    private final String SQL_ACCEPT_FRIEND = "UPDATE listaAmigos SET status = 1 WHERE (userId = ? or userId_friend = ?) and (userId = ? or userId_friend = ?)";
+    private final String SQL_DELETE_FRIEND = "DELETE FROM listaAmigos WHERE (userId = ? or userId_friend = ?) and (userId = ? or userId_friend = ?)";
 
     private Connection conn = null;
 
@@ -231,12 +233,83 @@ public class UsuarioDAO {
             return completado;
         }
     }
+    
+    public String removeFriend(AmistadDTO dto) {
+        obtenerConexion();
+        CallableStatement cs = null;
+        String completado = null;
+        try {
+            cs = conn.prepareCall(SQL_DELETE_FRIEND);
+            cs.setString(1, dto.getEntidad().getEmail());
+            cs.setString(2, dto.getEntidad().getEmail());
+            cs.setString(3, dto.getEntidad().getAmigo());
+            cs.setString(4, dto.getEntidad().getAmigo());
+            cs.executeUpdate();
+        } catch (SQLException ex) {
+            completado = "error";
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (completado == null) {
+                completado = "ok";
+            }
+            return completado;
+        }
+    }
+
+    public String acceptFriend(AmistadDTO dto) {
+        obtenerConexion();
+        CallableStatement cs = null;
+        String completado = null;
+        try {
+            cs = conn.prepareCall(SQL_ACCEPT_FRIEND);
+            cs.setString(1, dto.getEntidad().getEmail());
+            cs.setString(2, dto.getEntidad().getEmail());
+            cs.setString(3, dto.getEntidad().getAmigo());
+            cs.setString(4, dto.getEntidad().getAmigo());
+            cs.executeUpdate();
+        } catch (SQLException ex) {
+            completado = "error";
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (completado == null) {
+                completado = "ok";
+            }
+            return completado;
+        }
+    }
 
     private List obtenerListaAmigos(ResultSet rs, String logged) throws SQLException {
         List resultados = new ArrayList();
         while (rs.next()) {
             UsuarioDTO dto = new UsuarioDTO();
             usuario user = new usuario();
+            UsuarioDTO user_search = null;
             
             if(rs.getString("userId_friend").equals(logged)){
                 user.setEmail(rs.getString("userId"));
@@ -245,8 +318,15 @@ public class UsuarioDAO {
             }
 
             dto.setEntidad(user);
-
-            resultados.add(readFriend(dto));
+            user_search = readFriend(dto);
+            
+            if(!rs.getString("userId_friend").equals(logged)) {
+                user_search.getEntidad().setStatus(1);
+            } else {
+                user_search.getEntidad().setStatus(rs.getInt("status"));
+            }
+            
+            resultados.add(user_search);
         }
         return resultados;
     }
@@ -264,6 +344,7 @@ public class UsuarioDAO {
             dto.getEntidad().setPreferences(rs.getString("preferences"));
             dto.getEntidad().setRutaIMG(rs.getString("imgRuta"));
             dto.getEntidad().setPassword(rs.getString("pass"));
+            
             resultados.add(dto);
         }
         return resultados;

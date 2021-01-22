@@ -48,7 +48,15 @@ public class userServlet extends HttpServlet {
                             if (accion.equals("addFriend")) {
                                 addFriend(request, response);
                             } else {
-                                errorPage(request, response);
+                                if (accion.equals("removeFriend")) {
+                                    removeFriend(request, response);
+                                } else {
+                                    if (accion.equals("acceptFriend")) {
+                                        acceptFriend(request, response);
+                                    } else {
+                                        errorPage(request, response);
+                                    }
+                                }
                             }
                         }
                     }
@@ -181,11 +189,10 @@ public class userServlet extends HttpServlet {
     }
 
     private void addFriend(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String message = "";
         relacionAmistad user = new relacionAmistad();
         UsuarioDAO dao = new UsuarioDAO();
         AmistadDTO dto = new AmistadDTO();
-        
+
         HttpSession session;
         session = request.getSession();
 
@@ -194,8 +201,46 @@ public class userServlet extends HttpServlet {
         user.setStatus(0);
 
         dto.setEntidad(user);
-        
-        message = dao.addFriend(dto);
+
+        dao.addFriend(dto);
+
+        response.sendRedirect("index.jsp");
+    }
+
+    private void removeFriend(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        relacionAmistad user = new relacionAmistad();
+        UsuarioDAO dao = new UsuarioDAO();
+        AmistadDTO dto = new AmistadDTO();
+
+        HttpSession session;
+        session = request.getSession();
+
+        user.setEmail((String) session.getAttribute("userId"));
+        user.setAmigo((String) request.getParameter("friendId"));
+        user.setStatus(0);
+
+        dto.setEntidad(user);
+
+        dao.removeFriend(dto);
+
+        response.sendRedirect("index.jsp");
+    }
+
+    private void acceptFriend(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        relacionAmistad user = new relacionAmistad();
+        UsuarioDAO dao = new UsuarioDAO();
+        AmistadDTO dto = new AmistadDTO();
+
+        HttpSession session;
+        session = request.getSession();
+
+        user.setEmail((String) session.getAttribute("userId"));
+        user.setAmigo((String) request.getParameter("friendId"));
+        user.setStatus(0);
+
+        dto.setEntidad(user);
+
+        dao.acceptFriend(dto);
 
         response.sendRedirect("index.jsp");
     }

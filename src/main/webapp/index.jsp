@@ -1,7 +1,7 @@
 <%-- 
-    Document   : index
-    Created on : 7 ene 2021, 18:48:29
-    Author     : gerardo
+   Document   : index
+   Created on : 7 ene 2021, 18:48:29
+   Author     : gerardo
 --%>
 
 <%@page import="java.sql.SQLException"%>
@@ -75,7 +75,9 @@
                                 </li>
                                 <% if (amigos != null) {
                                         if (amigos.size() > 0) {
-                                            for (int i = 0; i < amigos.size(); i++) {%>
+                                            for (int i = 0; i < amigos.size(); i++) {
+                                                if (amigos.get(i).getEntidad().getStatus() == 1) {
+                                %>
                                 <li class="list-group-item bg-dark">
                                     <div class="container">
                                         <div class="row">
@@ -87,23 +89,57 @@
                                             </div>
                                             <div class="col-lg-2 col">
                                                 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                                    <button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-user-minus"></i></button>
-                                                    <button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></button>
+                                                    <a href="userServlet?accion=removeFriend&friendId=<% out.println(amigos.get(i).getEntidad().getEmail()); %>" class="btn btn-secondary btn-sm"><i class="fas fa-user-minus"></i></a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
-                                <%}
-                                        } else { %>
+                                <%
+                                        }
+                                    }
+                                } else { %>
                                 <li class="nav-item"><p class="text-light bg-dark">No tienes amigos</p></li>
                                     <% } %>
                                     <% } else { %>
                                 <li class="nav-item"><p class="text-light bg-dark">No tienes amigos</p></li>
                                     <% } %>
+                                
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">Solicitudes de amistad</a>
                                 </li>
+                                <% if (amigos != null) {
+                                        if (amigos.size() > 0) {
+                                            for (int i = 0; i < amigos.size(); i++) {
+                                                if (amigos.get(i).getEntidad().getStatus() == 0) {
+                                %>
+                                <li class="list-group-item bg-dark">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-2 col">
+                                                <img src="<% out.println(amigos.get(i).getEntidad().getRutaIMG()); %>" class="rounded-circle" height="20px" width="20px">
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="text-light bg-dark"><% out.println(amigos.get(i).getEntidad().getUsername()); %></p>
+                                            </div>
+                                            <div class="col-lg-2 col">
+                                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                                    <a href="userServlet?accion=removeFriend&friendId=<% out.println(amigos.get(i).getEntidad().getEmail()); %>" class="btn btn-secondary btn-sm"><i class="fas fa-user-minus"></i></a>
+                                                    <a href="userServlet?accion=acceptFriend&friendId=<% out.println(amigos.get(i).getEntidad().getEmail()); %>" class="btn btn-secondary btn-sm"><i class="fas fa-user-plus"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <%
+                                        }
+                                    }
+                                } else { %>
+                                <li class="nav-item"><p class="text-light bg-dark">No tienes solicitudes de amistad</p></li>
+                                    <% } %>
+                                    <% } else { %>
+                                <li class="nav-item"><p class="text-light bg-dark">No tienes solicitudes de amistad</p></li>
+                                    <% } %>
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">Solicitudes de intercambio</a>
                                 </li>
