@@ -54,7 +54,11 @@ public class userServlet extends HttpServlet {
                                     if (accion.equals("acceptFriend")) {
                                         acceptFriend(request, response);
                                     } else {
-                                        errorPage(request, response);
+                                        if (accion.equals("preferencias")) {
+                                            preferencias(request, response);
+                                        } else {
+                                            errorPage(request, response);
+                                        }
                                     }
                                 }
                             }
@@ -154,7 +158,7 @@ public class userServlet extends HttpServlet {
         try {
             usuarios = dao.readUsuarios(dto);
             amigos = dao.obtenerAmigos(dto);
-            
+
             request.removeAttribute("usuarios");
             request.setAttribute("usuarios", usuarios);
             request.setAttribute("amigos", amigos);
@@ -207,7 +211,7 @@ public class userServlet extends HttpServlet {
         dto.setEntidad(user);
 
         dao.addFriend(dto);
-        
+
         request.removeAttribute("usuarios");
 
         response.sendRedirect("index.jsp");
@@ -248,6 +252,28 @@ public class userServlet extends HttpServlet {
         dao.acceptFriend(dto);
 
         response.sendRedirect("index.jsp");
+    }
+
+    private void preferencias(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        usuario user = new usuario();
+        UsuarioDAO dao = new UsuarioDAO();
+        UsuarioDTO dto = new UsuarioDTO();
+        String res = "";
+        
+        HttpSession session;
+        session = request.getSession();
+
+        user.setEmail((String) session.getAttribute("userId"));
+        user.setPreferences(request.getParameter("preferencias"));
+
+        dto.setEntidad(user);
+        res = dao.update(dto);
+
+        if (res.equals("error")) {
+            response.sendRedirect("login.jsp?message=error");
+        } else {
+            response.sendRedirect("index.jsp");
+        }
     }
 
 }

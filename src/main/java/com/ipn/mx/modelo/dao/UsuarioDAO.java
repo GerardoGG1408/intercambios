@@ -29,7 +29,7 @@ public class UsuarioDAO {
     static final String PASS = "sdjelioiykq4rgr3";
 
     private final String SQL_INSERT = "INSERT INTO usuario(email, username, name, lastName, loginStatus, imgRuta, pass) VALUES (?,?,?,?,?,?,?)";
-    private final String SQL_UPDATE = "";
+    private final String SQL_UPDATE = "UPDATE usuario SET preferences = ? WHERE email = ?";
     private final String SQL_DELETE = "";
     private final String SQL_READ = "SELECT * FROM usuario WHERE pass = ? AND ( email = ? OR username = ? )";
     private final String SQL_READ_FRIEND = "SELECT * FROM usuario WHERE email = ?";
@@ -331,5 +331,38 @@ public class UsuarioDAO {
             resultados.add(dto);
         }
         return resultados;
+    }
+
+    public String update(UsuarioDTO dto) {
+        obtenerConexion();
+        CallableStatement cs = null;
+        String completado = null;
+        try {
+            cs = conn.prepareCall(SQL_UPDATE);
+            cs.setString(1, dto.getEntidad().getPreferences());
+            cs.setString(2, dto.getEntidad().getEmail());
+            cs.executeUpdate();
+        } catch (SQLException ex) {
+            completado = "error";
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (completado == null) {
+                completado = "ok";
+            }
+            return completado;
+        }
     }
 }

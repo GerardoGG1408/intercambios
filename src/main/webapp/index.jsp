@@ -4,6 +4,8 @@
    Author     : gerardo
 --%>
 
+<%@page import="com.ipn.mx.modelo.dto.DestinatarioDTO"%>
+<%@page import="com.ipn.mx.modelo.dto.AmistadDTO"%>
 <%@page import="com.ipn.mx.modelo.dao.IntercambiosDAO"%>
 <%@page import="com.ipn.mx.modelo.dto.IntercambiosDTO"%>
 <%@page import="java.util.ArrayList"%>
@@ -48,6 +50,7 @@
                 List<UsuarioDTO> amigos = null;
                 List<IntercambiosDTO> misIntercambios = null;
                 List<IntercambiosDTO> solicitudesIntercambio = null;
+                List<DestinatarioDTO> darRegalo = null;
                 UsuarioDAO dao = new UsuarioDAO();
                 IntercambiosDAO daoInt = new IntercambiosDAO();
                 UsuarioDTO dto = new UsuarioDTO();
@@ -60,6 +63,7 @@
                 try {
                     amigos = dao.obtenerAmigos(dto);
                     solicitudesIntercambio = daoInt.obtenerSolicitudesIntercambio(dto);
+                    darRegalo = daoInt.obtenerDestinatario(dto);
                     misIntercambios = daoInt.read(dto);
                 } catch (SQLException ex) {
                     out.println(ex.getMessage());
@@ -153,7 +157,7 @@
                                     <% if (solicitudesIntercambio != null) {
                                             if (solicitudesIntercambio.size() > 0) {
                                                 for (int i = 0; i < solicitudesIntercambio.size(); i++) {
-                                                    if (solicitudesIntercambio.get(i).getEntidad().getStatus_sol()== 0) {
+                                                    if (solicitudesIntercambio.get(i).getEntidad().getStatus_sol() == 0) {
                                     %>
                                 <li class="list-group-item bg-dark">
                                     <div class="container">
@@ -188,12 +192,12 @@
                 <main class="col px-0 flex-grow-1">
                     <div class="container py-3">
                         <div class="abs-center">
-                            <% if (request.getAttribute("usuarios") == null && request.getParameter("form") == null) { %>
+                            <% if (request.getAttribute("usuarios") == null && request.getParameter("form") == null && request.getParameter("preferences") == null) { %>
 
 
                             <div class="container-fluid">
                                 <a class="btn btn-secondary btn-lg" href="index.jsp?form=true">Crear un nuevo Intercambio</a>
-
+                                <a class="btn btn-secondary btn-lg" href="index.jsp?preferences=true">Editar mis preferencias</a>
                                 <br/>
                                 <hr/>
                                 <h3>Mis intercambios</h3>
@@ -317,19 +321,79 @@
 
                                 <% } else { %>
 
-                                No has creado intercambios o aun no te invitan a algun intercambio
+                                No has creado intercambios
 
                                 <% } %>
 
                                 <% } else { %>
 
-                                No has creado intercambios o aun no te invitan a algun intercambio
+                                No has creado intercambios
 
                                 <% } %>
 
+                                <br/>
+                                <hr/>
+                                <h3>Intercambios aceptados</h3>
+                                <hr/>
+                                <br/>
 
+                                <% if (darRegalo != null) {
+                                        if (darRegalo.size() > 0) {
+                                            for (int i = 0; i < darRegalo.size(); i++) {
+                                                if (darRegalo.get(i).getEntidad().getStatus() == 1) {
+                                %>
+                                <div class="accordion accordion-flush" id="InvitadoaccordionFlushExample<% out.print(i); %>">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="Invitadoflush-heading<% out.print(i); %>">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Invitadoflush-collapse<% out.print(i); %>" aria-expanded="false" aria-controls="Invitadoflush-collapse<% out.print(i); %>">
+                                                <% out.println(darRegalo.get(i).getEntidad().getNombreIntercambio()); %>
+                                            </button>
+                                        </h2>
+                                        <div id="Invitadoflush-collapse<% out.print(i); %>" class="accordion-collapse collapse" aria-labelledby="Invitadoflush-heading<% out.print(i); %>" data-bs-parent="#InvitadoaccordionFlushExample<% out.print(i); %>">
+                                            <div class="accordion-body">
 
+                                                <h6><p class="text-break">Folio: <% out.print(darRegalo.get(i).getEntidad().getIntercambioId()); %></p></h6>
 
+                                                <div class="container">
+                                                    <div class="row align-items-start m-4">
+                                                        <div class="col-lg">
+                                                            <i class="fas fa-envelope-square fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(darRegalo.get(i).getEntidad().getUserEmail()); %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-center m-4">
+                                                        <div class="col-lg">
+                                                            <i class="fas fa-user fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(darRegalo.get(i).getEntidad().getUsername()); %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-end m-4">
+                                                        <div class="col-lg">
+                                                            <i class="fas fa-gift fa-2x"></i>
+                                                        </div>
+                                                        <div class="col-lg">
+                                                            <% out.print(darRegalo.get(i).getEntidad().getPreferencias()); %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%
+                                        }
+                                    }
+                                } else {
+                                %>No has aceptado invitaciones<%
+                                    }
+                                } else {
+                                %>No has aceptado invitaciones<%
+                                    }
+                                %>
 
                             </div>
                             <% } else if (request.getAttribute("usuarios") != null) {
@@ -420,7 +484,51 @@
 
                                 <% }%>
                             </div>
-                            <%}%>
+                            <%} else if (request.getParameter("preferences") != null) {%>
+                            <%
+                                boolean error = false;
+                                String parametro = request.getParameter("message");
+
+                                if (parametro != null) {
+                                    if (parametro.equals("error")) {
+                                        error = true;
+                                    } else {
+                                        error = false;
+                                    }
+                                } else {
+                                    error = false;
+                                }
+                            %>
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                <form action="userServlet?accion=preferencias" method="post">
+                                    <h3>Editar mis preferencias</h3>
+                                    <hr/>
+                                    <br/>
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Preferencias" id="preferencias" name="preferencias"></textarea>
+                                        <label for="giftComment">Preferencias</label>
+                                    </div>
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                        <input type="submit" class="btn btn-secondary btn-lg" name="submit" value="Actualizar">
+                                        <a class="btn btn-secondary btn-lg" href="index.jsp">Regresar</a>
+                                    </div>
+                                </form>
+                                <% if (error) { %>
+
+                                <div class="d-flex justify-content-center">
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <h4 class="alert-heading text-center">Error</h4>
+                                        <p class="text-center">Ocurrio un error durante la actualizacion de preferencias. <br> Intentalo de nuevo.</p>
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <% }%>
+                            </div>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                 </main>

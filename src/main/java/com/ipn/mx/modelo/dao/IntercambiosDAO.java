@@ -1,7 +1,9 @@
 package com.ipn.mx.modelo.dao;
 
+import com.ipn.mx.modelo.dto.DestinatarioDTO;
 import com.ipn.mx.modelo.dto.IntercambiosDTO;
 import com.ipn.mx.modelo.dto.UsuarioDTO;
+import com.ipn.mx.modelo.entidades.destinatario;
 import com.ipn.mx.modelo.entidades.intercambios;
 import com.ipn.mx.modelo.entidades.usuario;
 import java.sql.CallableStatement;
@@ -36,6 +38,7 @@ public class IntercambiosDAO {
     private final String SQL_READ_ID = "SELECT * FROM intercambio WHERE id = ?";
     private final String SQL_ACCEPT_INVITACION = "UPDATE listaParticipantes SET status = ? WHERE intercambioId = ? and userEmail = ?";
     private final String SQL_DELETE_INVITACION = "DELETE FROM listaParticipantes WHERE intercambioId = ? and userEmail = ?";
+    private final String SQL_READ_FRIEND = "SELECT * FROM usuario WHERE email = ?";
 
     private Connection conn = null;
 
@@ -271,6 +274,97 @@ public class IntercambiosDAO {
                 completado = "ok";
             }
             return completado;
+        }
+    }
+    
+    public List obtenerDestinatario(UsuarioDTO dto) throws SQLException {
+        obtenerConexion();
+        CallableStatement cs = null;
+        ResultSet rs = null;
+        cs = conn.prepareCall(SQL_READ_SOLICITUDES);
+        cs.setString(1, dto.getEntidad().getEmail());
+        rs = cs.executeQuery();
+        List resultados = null;
+        resultados = obtenerDatosDestinatario(rs);
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return resultados;
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
+        }
+    }
+    
+    private List obtenerDatosDestinatario(ResultSet rs) throws SQLException {
+        List resultados = new ArrayList();
+        while (rs.next()) {
+            DestinatarioDTO dto = new DestinatarioDTO();
+            DestinatarioDTO inter = new DestinatarioDTO();
+            DestinatarioDTO inter_search = null;
+            usuario user = new usuario();
+            UsuarioDAO daoUsuario = new UsuarioDAO();
+            UsuarioDTO dtoUsuario = new UsuarioDTO();
+            IntercambiosDAO daoInt = new IntercambiosDAO();
+            IntercambiosDTO dtoInt = new IntercambiosDTO();
+            IntercambiosDTO dtoInt_buscado = new IntercambiosDTO();
+            
+            
+            String intercambioId = rs.getString("intercambioId");
+            
+            dtoInt.getEntidad().setId(intercambioId);
+            dtoInt_buscado.setEntidad(daoInt.readIntercambio(dtoInt).getEntidad());
+            
+            int status = 0;
+            status = rs.getInt("status");
+            String giftTo = rs.getString("giftTo");
+            if(giftTo == null){
+                inter.getEntidad().setUserEmail("");
+                inter.getEntidad().setUsername("Aun no se asigna un destinatario para ti");
+                inter.getEntidad().setIntercambioId(intercambioId);
+                inter.getEntidad().setNombreIntercambio(dtoInt_buscado.getEntidad().getNombre());
+                inter.getEntidad().setPreferencias("");
+                inter.getEntidad().setImg("");
+                inter.getEntidad().setStatus(status);
+            }else {
+                user.setEmail(giftTo);
+                dtoUsuario.setEntidad(user);
+                dtoUsuario = daoUsuario.readFriend(dtoUsuario);
+                
+                inter.getEntidad().setUserEmail(dtoUsuario.getEntidad().getEmail());
+                inter.getEntidad().setUsername(dtoUsuario.getEntidad().getUsername());
+                inter.getEntidad().setIntercambioId(intercambioId);
+                inter.getEntidad().setNombreIntercambio(dtoInt_buscado.getEntidad().getNombre());
+                inter.getEntidad().setPreferencias(dtoUsuario.getEntidad().getPreferences());
+                inter.getEntidad().setImg(dtoUsuario.getEntidad().getRutaIMG());
+                inter.getEntidad().setStatus(status);
+            }
+            resultados.add(inter);
+        }
+        return resultados;
+    }
+
+    public UsuarioDTO readDestinatario(UsuarioDTO dto) throws SQLException {
+        obtenerConexion();
+        CallableStatement cs = null;
+        ResultSet rs = null;
+        cs = conn.prepareCall(SQL_READ_FRIEND);
+        cs.setString(1, dto.getEntidad().getEmail());
+        rs = cs.executeQuery();
+        List resultados = obtenerResultados(rs);
+        if (resultados.size() > 0) {
+            rs.close();
+            cs.close();
+            conn.close();
+            return (UsuarioDTO) resultados.get(0);
+        } else {
+            rs.close();
+            cs.close();
+            conn.close();
+            return null;
         }
     }
 }
